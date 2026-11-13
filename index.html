@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>João Santos | AI engineering, back-end e dados</title>
+  <meta name="description" content="Estudante de Ciência da Computação no Mackenzie. Projetos de IA medidos por eval: classificador de ECG, extrator de notas fiscais com LLM e agente em LangGraph.">
+  <meta property="og:title" content="João Santos | AI engineering, back-end e dados">
+  <meta property="og:description" content="Projetos de IA medidos por eval: classificador de ECG, extrator de notas fiscais com LLM e agente em LangGraph.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://joaogmos.github.io/">
+  <meta name="theme-color" content="#0E1013">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="pular" href="#projetos">Pular para os projetos</a>
+
+  <header class="topo">
+    <div class="topo__interno">
+      <a class="marca" href="#inicio">João Santos</a>
+      <nav aria-label="Seções">
+        <a href="#projetos">Projetos</a>
+        <a class="nav-opcional" href="#experiencia">Experiência</a>
+        <a href="#contato">Contato</a>
+        <a href="cv.pdf">CV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="hero__texto">
+        <div class="hero__quem">
+          <img class="foto" src="img/foto.webp" width="240" height="240" alt="Foto de João Santos">
+          <p class="rotulo">AI engineering, back-end e dados</p>
+        </div>
+        <h1>Faço modelos de IA funcionarem fora do notebook.</h1>
+        <p class="hero__sub">Estudo Ciência da Computação no Mackenzie e sou estagiário de desenvolvimento. Cada projeto aqui tem teste, eval e número.</p>
+        <div class="acoes">
+          <a class="botao botao--cheio" href="#projetos">Ver projetos</a>
+          <a class="botao" href="cv.pdf">Currículo em PDF</a>
+        </div>
+      </div>
+      <figure class="hero__sinal">
+        <img src="img/ecg-dii.webp" width="1155" height="279" alt="Traçado da derivação DII de um ECG, com cinco batimentos em quatro segundos.">
+        <figcaption>Derivação DII de um exame do CODE-15%, a base de 345.779 ECGs que usei no TCC.</figcaption>
+      </figure>
+    </section>
+
+    <section id="projetos" class="secao">
+      <h2>Projetos de IA, com avaliação</h2>
+      <p class="secao__intro">Cada um compara abordagens no mesmo conjunto de teste e diz onde falhou.</p>
+
+      <article class="projeto projeto--destaque">
+        <div class="projeto__cabeca">
+          <h3>ECG Transformer</h3>
+          <p class="stack">Python, PyTorch, FastAPI, Docker</p>
+        </div>
+        <p class="projeto__problema">Meu TCC: classificar ECG de 12 derivações em várias doenças ao mesmo tempo. Comparei um Transformer 1D escrito do zero com uma ResNet 1D no mesmo pipeline. A ResNet venceu e foi para uma API de triagem em lote, com interface web e laudo em PDF.</p>
+        <dl class="numeros">
+          <div>
+            <dt>F1 macro em 827 exames laudados por cardiologistas</dt>
+            <dd><span class="valor valor--acento">0,867</span> <span class="contra">residentes de cardiologia: 0,862</span></dd>
+          </div>
+          <div>
+            <dt>AUC na validação externa (PTB-XL, 21.799 exames da Alemanha)</dt>
+            <dd><span class="valor">0,982</span></dd>
+          </div>
+          <div>
+            <dt>F1 depois de achar e corrigir derivações trocadas no conjunto de teste</dt>
+            <dd><span class="valor">0,648 &rarr; 0,722</span></dd>
+          </div>
+        </dl>
+        <p class="ressalva">Trabalho em grupo de 4. Sou o principal desenvolvedor (27 de 31 commits) e quem coordena a documentação.</p>
+        <a class="link" href="https://github.com/Joaogmos/IAECG">Código no GitHub</a>
+      </article>
+
+      <div class="par">
+        <article class="projeto">
+          <div class="projeto__cabeca">
+            <h3>Extrator Fiscal com LLM</h3>
+            <p class="stack">Ollama, Pydantic, FastAPI, Celery</p>
+          </div>
+          <p class="projeto__problema">Extrai 13 campos de notas fiscais em PDF com saída estruturada (JSON Schema). A regex roda primeiro porque é grátis; o LLM só entra quando a validação reprova.</p>
+          <p class="medida">Documentos com os 13 campos certos, 48 de teste</p>
+          <ul class="barras">
+            <li style="--v: 54"><span class="barras__nome">Regex</span><span class="barras__barra"></span><span class="barras__num">54%</span></li>
+            <li style="--v: 19"><span class="barras__nome">LLM com texto</span><span class="barras__barra"></span><span class="barras__num">19%</span></li>
+            <li style="--v: 54"><span class="barras__nome">LLM com visão</span><span class="barras__barra"></span><span class="barras__num">54%</span></li>
+            <li class="barras__ganha" style="--v: 79"><span class="barras__nome">Cascata</span><span class="barras__barra"></span><span class="barras__num">79%</span></li>
+          </ul>
+          <p class="nota">A cascata faz 0,62 chamada ao LLM por documento, em média. A validação confere dígito verificador do CNPJ e da chave e as contas da nota, sem gabarito.</p>
+          <p class="ressalva">Documentos sintéticos e modelos abertos de 7B rodando local. Devolver os erros ao modelo para ele corrigir ajudou pouco: 6 de 21 no texto, 0 de 22 na visão.</p>
+          <a class="link" href="https://github.com/Joaogmos/extrator-fiscal-llm">Código no GitHub</a>
+        </article>
+
+        <article class="projeto">
+          <div class="projeto__cabeca">
+            <h3>Pergunte ao Brasileirão</h3>
+            <p class="stack">LangGraph, Ollama, FastAPI</p>
+          </div>
+          <p class="projeto__problema">Agente com tool calling que responde perguntas sobre o Brasileirão sem inventar número. Um verificador em código confere cada número da resposta, e o agente recusa o que foge do escopo.</p>
+          <p class="medida">Respostas certas, 20 casos de teste com juiz em código</p>
+          <ul class="barras">
+            <li class="barras__ganha" style="--v: 90"><span class="barras__nome">qwen2.5:7b</span><span class="barras__barra"></span><span class="barras__num">18 de 20</span></li>
+            <li style="--v: 25"><span class="barras__nome">llama3.2:3b</span><span class="barras__barra"></span><span class="barras__num">5 de 20</span></li>
+          </ul>
+          <p class="nota">Roda sobre o modelo Dixon-Coles do Brasileirão em Números. 50 casos de eval no total (30 de desenvolvimento, 20 de teste) e 59 testes no CI.</p>
+          <a class="link" href="https://github.com/Joaogmos/pergunte-ao-brasileirao">Código no GitHub</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="secao">
+      <h2>Back-end e dados</h2>
+      <ul class="curtos">
+        <li>
+          <span class="curtos__num">1 de 50</span>
+          <div>
+            <h3><a href="https://github.com/Joaogmos/sistema-reservas">Sistema de Reservas</a></h3>
+            <p>50 requisições simultâneas para o mesmo horário: 1 reserva criada, 49 recusadas com HTTP 409. A regra está numa constraint de exclusão do PostgreSQL, então vale sob concorrência. FastAPI, React, 26 testes de integração.</p>
+          </div>
+        </li>
+        <li>
+          <span class="curtos__num">40 s &rarr; 8 s</span>
+          <div>
+            <h3><a href="https://github.com/Joaogmos/importador-assincrono">Importador Assíncrono</a></h3>
+            <p>Upload de CSV grande que responde na hora e processa num worker Celery. Inserção em lote 5x mais rápida em 50 mil linhas, com retry, fila de mortos e idempotência por SHA-256.</p>
+          </div>
+        </li>
+        <li>
+          <span class="curtos__num">5.618 jogos</span>
+          <div>
+            <h3><a href="https://github.com/Joaogmos/brasileirao-em-numeros">Brasileirão em Números</a></h3>
+            <p>Modelo Dixon-Coles com Elo, testado fora da amostra contra as odds do mercado, com simulação de Monte Carlo da temporada e painel em Streamlit.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section id="experiencia" class="secao">
+      <h2>Experiência</h2>
+      <ol class="linha">
+        <li>
+          <p class="linha__quando">ago/2025 até hoje</p>
+          <h3>CorpServices Group</h3>
+          <p class="linha__cargo">Estagiário de Desenvolvimento de Sistemas</p>
+          <p>Automações em Python com LLMs que extraem dados de documentos fiscais e extratos bancários, usadas por várias equipes (cerca de 15 a 20 horas economizadas por semana em cada uma, pela minha estimativa). RPA no ServiceNow que captura dados da Receita Federal e aplicações web internas em JavaScript.</p>
+        </li>
+        <li>
+          <p class="linha__quando">mar/2025 a ago/2025</p>
+          <h3>Taxbase S/A</h3>
+          <p class="linha__cargo">Estagiário de TI</p>
+          <p>Automações de processos internos com n8n e Python, e manutenção do banco SQL Server e dos servidores.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="secao secao--jeito">
+      <h2>Como eu trabalho com IA</h2>
+      <p>Escrevo a maior parte do código com agentes de IA (Claude Code), no estágio e nestes projetos. O escopo e as decisões são meus. O que garante que funciona são os testes, o CI e o eval, e por isso todo projeto aqui mostra os três.</p>
+    </section>
+
+    <section id="contato" class="secao contato">
+      <h2>Contato</h2>
+      <p>Ciência da Computação no Mackenzie, com formatura prevista para dezembro de 2027. Membro do DataLab Mackenzie, onde desenvolvo o TCC. Procuro estágio em AI engineering, back-end ou dados, em São Paulo ou remoto.</p>
+      <div class="acoes">
+        <a class="botao botao--cheio" href="mailto:jonnygmos@gmail.com">jonnygmos@gmail.com</a>
+        <a class="botao" href="https://www.linkedin.com/in/jo%C3%A3o-santos-365978338">LinkedIn</a>
+        <a class="botao" href="https://github.com/Joaogmos">GitHub</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p>João Santos, São Paulo. Site em HTML e CSS, sem framework.</p>
+  </footer>
+</body>
+</html>
